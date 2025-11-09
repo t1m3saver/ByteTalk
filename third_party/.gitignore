@@ -1,0 +1,40 @@
+# CMake build directories
+/build/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+CTestTestfile.cmake
+/logs
+
+# Dependency directories
+/dependencies/
+/depend
+*.cmake
+!cmake/*
+
+# IDE or editor files
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln
+*.xcodeproj
+
+# Generated files
+*.o
+*.a
+*.so
+*.exe
+*.out
+
+# Log files
+*.log
+
+# Temporary files
+*~ 
+*.swp
+
+core.*
+*.core
