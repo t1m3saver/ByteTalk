@@ -6,8 +6,8 @@ target_include_directories(Capture
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}  
         ${PROJECT_ROOT}/CHATCBBCommon/
-        ${PROJECT_ROOT}/CHATCBBThirdPartyDepends/include
-        ${FFMPEG_ROOT}/include
+        ${PROJECT_ROOT}/CHATCBBThirdPartyDepends/include 
+        ${PROJECT_ROOT}/CHATCBBThirdPartyDepends/include/ffmpeg_static 
 )
 target_link_libraries(Capture
     PRIVATE

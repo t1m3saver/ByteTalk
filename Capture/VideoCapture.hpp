@@ -5,9 +5,9 @@
 #include <cstdint>
 #include <memory>
 extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
+#include "libavformat/avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libswscale/swscale.h"
 }
 
 struct AVFormatContext;
@@ -40,22 +40,23 @@ struct FFmpegDeleters {
 };
 class VideoCapture {
 public:
-    VideoCapture(int deviceIndex = 0, int width = 640, int height = 480, int fps = 30);
+    VideoCapture(std::string deviceName, int width = 640, int height = 480, int fps = 30);
     ~VideoCapture();
 
     bool readFrame(std::vector<uint8_t>& outRGB);
 
 private:
     void openDevice();
+    void getAllDevices(const AVInputFormat* ifmt, std::vector<std::string>& deviceNames);
 
 private:
     std::unique_ptr<AVFormatContext, FFmpegDeleters> fmtCtx_;
     std::unique_ptr<AVCodecContext, FFmpegDeleters> codecCtx_;
     std::unique_ptr<SwsContext, FFmpegDeleters> swsCtx_;
     std::unique_ptr<AVFrame, FFmpegDeleters> frame_;
-    
+
     int videoStreamIndex_;
-    int deviceIndex_;
+    int deviceName_;
     int width_;
     int height_;
     int fps_;
