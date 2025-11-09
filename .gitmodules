@@ -7,3 +7,4 @@
 [submodule "third_party/ffmpeg"]
 	path = third_party/ffmpeg
 	url = https://git.ffmpeg.org/ffmpeg.git
+	ignore = all
