@@ -7,17 +7,19 @@ target_include_directories(Capture
         ${CMAKE_CURRENT_SOURCE_DIR}  
         ${PROJECT_ROOT}/CHATCBBCommon/
         ${PROJECT_ROOT}/CHATCBBThirdPartyDepends/include 
-        ${PROJECT_ROOT}/CHATCBBThirdPartyDepends/include/ffmpeg_static 
+        ${PROJECT_ROOT}/third_party/ffmpeg/build/include 
 )
 target_link_libraries(Capture
     PRIVATE
         LockFreeMPSCLogger
-        avdevice
-        avformat
-        avcodec
-        avutil
-        swscale
-        swresample
-        avfilter
-        pthread 
+        ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libavdevice.a
+        ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libavfilter.a
+        ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libavformat.a
+        ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libavcodec.a
+        ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libswresample.a
+        ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libswscale.a
+        ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libavutil.a
+        -lm
+        -lpthread
+        -ldl
 )

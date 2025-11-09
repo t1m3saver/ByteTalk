@@ -4,3 +4,6 @@
 [submodule "CHATCBBThirdPartyDepends"]
 	path = CHATCBBThirdPartyDepends
 	url = git@github.com:ChatGr0up/CHATCBBThirdPartyDepends.git
+[submodule "third_party/ffmpeg"]
+	path = third_party/ffmpeg
+	url = https://git.ffmpeg.org/ffmpeg.git

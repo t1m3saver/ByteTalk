@@ -48,6 +48,7 @@ public:
 private:
     void openDevice();
     void getAllDevices(const AVInputFormat* ifmt, std::vector<std::string>& deviceNames);
+    bool openSingleDevice(const AVInputFormat* ifmt, const std::string& devName);
 
 private:
     std::unique_ptr<AVFormatContext, FFmpegDeleters> fmtCtx_;
@@ -56,7 +57,7 @@ private:
     std::unique_ptr<AVFrame, FFmpegDeleters> frame_;
 
     int videoStreamIndex_;
-    int deviceName_;
+    std::string deviceName_;
     int width_;
     int height_;
     int fps_;
