@@ -9,6 +9,7 @@ target_link_libraries(ByteTalk
         LockFreeMPSCLogger
         CHATCBBThirdPartyDepends
         Capture
+        Demo
 )
 
 target_include_directories(ByteTalk

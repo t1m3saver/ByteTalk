@@ -6,3 +6,13 @@ linux:
 sudo apt install ffmpeg v4l2loopback-dkms v4l2loopback-utils
 sudo modprobe v4l2loopback devices=1 video_nr=0 card_label="VirtualCam"
 ffmpeg -i udp://0.0.0.0:8554 -f v4l2 /dev/video0
+
+example：
+while (true) {
+        std::vector<uint8_t> frameData;
+        if (videoCapture->readFrame(frameData)) {
+            LOG_INFO("Captured frame of size: " << frameData.size());
+        } else {
+            LOG_ERROR("Failed to capture frame.");
+        }
+    }

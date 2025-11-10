@@ -1,17 +1,13 @@
 #include <csignal> 
 #include "LockFreeMPSCLogger/LogMacro.hpp"
 #include "Capture/VideoCapture.hpp"
+#include "Demo/DemoTest.hpp"
 
 int main() {
-    std::unique_ptr<Capture::VideoCapture> videoCapture = 
-        std::make_unique<Capture::VideoCapture>("/dev/video0", 640, 480, 30);
+    std::unique_ptr<Demo::TestTrigger> demoTrigger = std::make_unique<Demo::TestTrigger>();
     while (true) {
-        std::vector<uint8_t> frameData;
-        if (videoCapture->readFrame(frameData)) {
-            LOG_INFO("Captured frame of size: " << frameData.size());
-        } else {
-            LOG_ERROR("Failed to capture frame.");
-        }
+        demoTrigger->RunAllTests();
+        std::this_thread::sleep_for(std::chrono::seconds(10));
     }
     LOG_INFO("CHATProcessor started. waiting for termination signal...");
     sigset_t mask;
