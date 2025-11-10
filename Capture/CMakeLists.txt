@@ -19,7 +19,4 @@ target_link_libraries(Capture
         ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libswresample.a
         ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libswscale.a
         ${PROJECT_ROOT}/third_party/ffmpeg/build/lib/libavutil.a
-        -lm
-        -lpthread
-        -ldl
 )
