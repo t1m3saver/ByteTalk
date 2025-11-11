@@ -13,7 +13,7 @@ static int read_packet(void *opaque, uint8_t *buf, int buf_size)
     buf_size = FFMIN(buf_size, bd->size);
     if (!buf_size)
         return AVERROR_EOF;
-    LOG_INFO("read_packet called: " << "buf_size=" << buf_size << " bd->size=" << bd->size);
+    // LOG_INFO("read_packet called: " << "buf_size=" << buf_size << " bd->size=" << bd->size);
  
     memcpy(buf, bd->ptr, buf_size);
     bd->ptr  += buf_size;
@@ -33,7 +33,11 @@ void TestTrigger::TestAVIOReading(const std::string& fileName)
     size_t buffer_size, avio_ctx_buffer_size = 4096;
     int ret = 0;
     struct buffer_data bd = { 0 };
- 
+    int video_stream_index = -1;
+    int audio_stream_index = -1;
+    int packet_count = 0;
+    int max_packets = 50; // 限制读取的数据包数量，避免日志过多
+    AVPacket *pkt = NULL;
     const char* input_filename = fileName.c_str();
  
     /* slurp file content into buffer */
@@ -83,8 +87,65 @@ void TestTrigger::TestAVIOReading(const std::string& fileName)
         LOG_ERROR("Could not find stream information.");
         goto end;
     }
- 
-    av_dump_format(fmt_ctx, 0, input_filename, 0); // 打印格式信息
+    for (unsigned int i = 0; i < fmt_ctx->nb_streams; i++) {
+        AVStream *stream = fmt_ctx->streams[i];
+        AVCodecParameters *codecpar = stream->codecpar;
+        
+        LOG_INFO("Stream #" << i << ": "
+                << "type=" << av_get_media_type_string(codecpar->codec_type) << ", "
+                << "codec=" << avcodec_get_name(codecpar->codec_id) << ", "
+                << "duration=" << stream->duration << ", "
+                << "time_base=" << stream->time_base.num << "/" << stream->time_base.den);
+    }
+    // 查找视频流
+    video_stream_index = av_find_best_stream(fmt_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
+    if (video_stream_index >= 0) {
+        AVStream *video_stream = fmt_ctx->streams[video_stream_index];
+        LOG_INFO("Found video stream: " << video_stream_index 
+                << ", width=" << video_stream->codecpar->width 
+                << ", height=" << video_stream->codecpar->height);
+    }
+
+    // 查找音频流
+    audio_stream_index = av_find_best_stream(fmt_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
+    if (audio_stream_index >= 0) {
+        AVStream *audio_stream = fmt_ctx->streams[audio_stream_index];
+    
+        char channel_layout[64] = {0};
+        av_channel_layout_describe(&audio_stream->codecpar->ch_layout, channel_layout, sizeof(channel_layout));
+        LOG_INFO("Found audio stream: " << audio_stream_index 
+             << ", sample_rate=" << audio_stream->codecpar->sample_rate 
+             << ", channels=" << audio_stream->codecpar->ch_layout.nb_channels
+             << ", channel_layout=" << channel_layout);
+    }
+    pkt = av_packet_alloc();
+    if (!pkt) {
+        LOG_ERROR("Could not allocate packet");
+        goto end;
+    }
+
+    while (packet_count < max_packets) {
+        ret = av_read_frame(fmt_ctx, pkt);
+        if (ret < 0) {
+            if (ret == AVERROR_EOF) {
+                LOG_INFO("End of file reached");
+            } else {
+                LOG_ERROR("Error reading packet: ");
+            }
+            break;
+        }
+        
+        LOG_INFO("Read packet[" << packet_count << "]: stream_index=" << pkt->stream_index 
+                << ", size=" << pkt->size 
+                << ", pts=" << pkt->pts 
+                << ", dts=" << pkt->dts);
+        
+        av_packet_unref(pkt);
+        packet_count++;
+    }
+
+    av_packet_free(&pkt);
+    
  
 end:
     avformat_close_input(&fmt_ctx);
