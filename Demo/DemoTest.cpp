@@ -13,7 +13,7 @@ static int read_packet(void *opaque, uint8_t *buf, int buf_size)
     buf_size = FFMIN(buf_size, bd->size);
     if (!buf_size)
         return AVERROR_EOF;
-    // LOG_INFO("read_packet called: " << "buf_size=" << buf_size << " bd->size=" << bd->size);
+    LOG_INFO("read_packet called: " << "buf_size=" << buf_size << " bd->size=" << bd->size);
  
     memcpy(buf, bd->ptr, buf_size);
     bd->ptr  += buf_size;
@@ -130,6 +130,7 @@ void TestTrigger::TestAVIOReading(const std::string& fileName)
             if (ret == AVERROR_EOF) {
                 LOG_INFO("End of file reached");
             } else {
+                
                 LOG_ERROR("Error reading packet: ");
             }
             break;
