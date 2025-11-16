@@ -7,7 +7,7 @@ struct buffer_data {
     size_t size; ///< size left in the buffer
 };
  
-static int read_packet(void *opaque, uint8_t *buf, int buf_size)
+int read_packet(void *opaque, uint8_t *buf, int buf_size)
 {
     buffer_data *bd = (buffer_data *)opaque;
     buf_size = FFMIN(buf_size, bd->size);
